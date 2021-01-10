@@ -1,4 +1,4 @@
-apiVersion: "tutorial.myfirstoperator/v1"
+apiVersion: "fbruandrade.myfirstoperator/v1"
 kind: CustomService
 metadata:
     name: my-first-custom-service

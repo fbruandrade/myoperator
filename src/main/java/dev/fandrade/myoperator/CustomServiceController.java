@@ -6,7 +6,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.Watch;
 import io.fabric8.kubernetes.client.Watcher;
-//import io.fabric8.kubernetes.client.WatcherException;
 import io.javaoperatorsdk.operator.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller(crdName = "customservices.tutorial.myfirstoperator",isClusterScoped = true, namespaces = {"ALL_NAMESPACES"})
+@Controller(crdName = "customservices.fbruandrade.myfirstoperator",isClusterScoped = true, namespaces = {"ALL_NAMESPACES"})
 public class CustomServiceController implements ResourceController<CustomService> {
 
     private static final Logger log = LoggerFactory.getLogger(CustomServiceController.class);
@@ -42,7 +41,6 @@ public class CustomServiceController implements ResourceController<CustomService
 
                     @Override
                     public void eventReceived(Action action, Service resource) {
-                        // TODO Auto-generated method stub
                         log.info("Received {} event on name={} version={} for custom resource {}", action,
                                 resource.getMetadata().getName(), resource.getMetadata().getResourceVersion(),
                                 customResource.getMetadata().getName());
@@ -56,13 +54,8 @@ public class CustomServiceController implements ResourceController<CustomService
                         OnDependentResourceChange(customResource, resource);
                     }
 
-//                    @Override
-//                    public void onClose(WatcherException e) {
-//                        logger.error("Watch error received: {}", e.getMessage(), e);
-//                    }
                     @Override
                     public void onClose(KubernetesClientException cause) {
-                        // TODO Auto-generated method stub
                         log.info("Closing watch on service name={}", name);
                     }
 
@@ -75,7 +68,7 @@ public class CustomServiceController implements ResourceController<CustomService
     private void removeServiceWatcher(CustomService customResource) {
         if (!svcWatches.containsKey(customResource))
         {
-            log.info( "No watcher for service {}", customResource.getMetadata().getName());
+            log.info("No watcher for service {}", customResource.getMetadata().getName());
             return;
         }
 
@@ -85,7 +78,6 @@ public class CustomServiceController implements ResourceController<CustomService
 
     @Override
     public DeleteControl deleteResource(CustomService resource, Context<CustomService> context) {
-//        System.out.println(String.format("deleteResource for %s", resource.getMetadata().getName()));
         // You need to remove the service watcher first otherwise it will reinstate the service as you attempt to delete it
         removeServiceWatcher(resource);
 
@@ -99,7 +91,6 @@ public class CustomServiceController implements ResourceController<CustomService
 
     @Override
     public UpdateControl<CustomService> createOrUpdateResource(CustomService resource, Context<CustomService> context) {
-//        System.out.println(String.format("createOrUpdateResource for %s", resource.getMetadata().getName()));
         log.info("Execution createOrUpdateResource for: {}", resource.getMetadata().getName());
 
         // Remove any watches on resources managed by this custom resource whilst we're updating it
@@ -111,8 +102,6 @@ public class CustomServiceController implements ResourceController<CustomService
         setupServiceWatcher(resource);
 
         return UpdateControl.updateCustomResource(resource);
-//        createOrUpdateDependentResources(resource);
-//        return UpdateControl.updateCustomResource(resource);
     }
 
     public void OnDependentResourceChange(CustomService managingResource, Object managedResource)
@@ -148,24 +137,4 @@ public class CustomServiceController implements ResourceController<CustomService
                 .done();
 
     }
-
-//    private void createOrUpdateDependentResources(CustomService resource) {
-//
-//        ServicePort servicePort = new ServicePort();
-//        servicePort.setPort(8080);
-//
-//
-//        ServiceSpec serviceSpec = new ServiceSpec();
-//        serviceSpec.setPorts(Collections.singletonList(servicePort));
-//
-//        kubernetesClient.services()
-//                .inNamespace(resource.getMetadata().getNamespace())
-//                .createOrReplaceWithNew()
-//                .withNewMetadata()
-//                .withName(resource.getSpec().getName())
-//                .addToLabels("TestLabel", resource.getSpec().getLabel())
-//                .endMetadata()
-//                .withSpec(serviceSpec)
-//                .done();
-//    }
 }
