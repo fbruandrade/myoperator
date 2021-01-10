@@ -4,4 +4,4 @@ metadata:
     name: my-first-custom-service
 spec:
     name: custom-service-service
-    label: i-did-this
+    label: service-label

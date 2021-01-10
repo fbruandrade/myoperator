@@ -131,7 +131,7 @@ public class CustomServiceController implements ResourceController<CustomService
                 .createOrReplaceWithNew()
                 .withNewMetadata()
                 .withName(resource.getSpec().getName())
-                .addToLabels("testLabel", resource.getSpec().getLabel())
+                .addToLabels("fbruandradeLabel", resource.getSpec().getLabel())
                 .endMetadata()
                 .withSpec(serviceSpec)
                 .done();
